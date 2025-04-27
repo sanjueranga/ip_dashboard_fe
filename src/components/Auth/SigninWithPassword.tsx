@@ -41,7 +41,7 @@ export default function SigninWithPassword() {
         //redirect to dashboard or perform login action
 
         console.log("Login successful");
-        router.push("/") 
+        router.push("/dashboard"); 
 
         // Redirect or perform further actions here
       } else {
