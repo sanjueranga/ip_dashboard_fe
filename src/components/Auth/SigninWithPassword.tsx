@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import InputGroup from "../FormElements/InputGroup";
 import { Checkbox } from "../FormElements/checkbox";
+import { useRouter } from "next/navigation";
 
 export default function SigninWithPassword() {
   const [data, setData] = useState({
@@ -12,7 +13,13 @@ export default function SigninWithPassword() {
     remember: false,
   });
 
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const DEMO_EMAIL = "demo@example.com";
+  const DEMO_PASSWORD = "password123";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -23,12 +30,23 @@ export default function SigninWithPassword() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // You can remove this code block
     setLoading(true);
+    setError(null);
 
+    // Simulate API call
     setTimeout(() => {
       setLoading(false);
+
+      if (data.email === DEMO_EMAIL && data.password === DEMO_PASSWORD) {
+        //redirect to dashboard or perform login action
+
+        console.log("Login successful");
+        router.push("/") 
+
+        // Redirect or perform further actions here
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
     }, 1000);
   };
 
@@ -78,6 +96,12 @@ export default function SigninWithPassword() {
           Forgot Password?
         </Link>
       </div>
+
+      {error && (
+        <div className="mb-4 text-red-500 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="mb-4.5">
         <button
