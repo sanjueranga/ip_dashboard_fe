@@ -6,8 +6,7 @@ import dynamic from "next/dynamic";
 
 type PropsType = {
   data: {
-    received: { x: unknown; y: number }[];
-    due: { x: unknown; y: number }[];
+    traffic: { timestamp: string; rate: number }[];
   };
 };
 
@@ -15,14 +14,14 @@ const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export function PaymentsOverviewChart({ data }: PropsType) {
+export function NetworkTrafficChart({ data }: PropsType) {
   const isMobile = useIsMobile();
 
   const options: ApexOptions = {
     legend: {
       show: false,
     },
-    colors: ["#5750F1", "#0ABEF9"],
+    colors: ["#0ABEF9"],
     chart: {
       height: 310,
       type: "area",
@@ -76,11 +75,20 @@ export function PaymentsOverviewChart({ data }: PropsType) {
       },
     },
     xaxis: {
+      type: "datetime",
+      labels: {
+        format: "HH:mm:ss", // Format timestamps as hours, minutes, and seconds
+      },
       axisBorder: {
         show: false,
       },
       axisTicks: {
         show: false,
+      },
+    },
+    yaxis: {
+      labels: {
+        formatter: (value) => `${value} counts`, // Display counts on the y-axis
       },
     },
   };
@@ -91,12 +99,11 @@ export function PaymentsOverviewChart({ data }: PropsType) {
         options={options}
         series={[
           {
-            name: "Received",
-            data: data.received,
-          },
-          {
-            name: "Due",
-            data: data.due,
+            name: "Traffic Rate",
+            data: data.traffic.map((point) => ({
+              x: point.timestamp,
+              y: point.rate,
+            })),
           },
         ]}
         type="area"

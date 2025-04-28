@@ -37,63 +37,25 @@ export async function getDevicesUsedData(
   return data;
 }
 
-export async function getPaymentsOverviewData(
-  timeFrame?: "monthly" | "yearly" | (string & {}),
-) {
+export async function getNetworkTrafficData() {
   // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  if (timeFrame === "yearly") {
-    return {
-      received: [
-        { x: 2020, y: 450 },
-        { x: 2021, y: 620 },
-        { x: 2022, y: 780 },
-        { x: 2023, y: 920 },
-        { x: 2024, y: 1080 },
-      ],
-      due: [
-        { x: 2020, y: 1480 },
-        { x: 2021, y: 1720 },
-        { x: 2022, y: 1950 },
-        { x: 2023, y: 2300 },
-        { x: 2024, y: 1200 },
-      ],
-    };
-  }
-
   return {
-    received: [
-      { x: "Jan", y: 0 },
-      { x: "Feb", y: 20 },
-      { x: "Mar", y: 35 },
-      { x: "Apr", y: 45 },
-      { x: "May", y: 35 },
-      { x: "Jun", y: 55 },
-      { x: "Jul", y: 65 },
-      { x: "Aug", y: 50 },
-      { x: "Sep", y: 65 },
-      { x: "Oct", y: 75 },
-      { x: "Nov", y: 60 },
-      { x: "Dec", y: 75 },
-    ],
-    due: [
-      { x: "Jan", y: 15 },
-      { x: "Feb", y: 9 },
-      { x: "Mar", y: 17 },
-      { x: "Apr", y: 32 },
-      { x: "May", y: 25 },
-      { x: "Jun", y: 68 },
-      { x: "Jul", y: 80 },
-      { x: "Aug", y: 68 },
-      { x: "Sep", y: 84 },
-      { x: "Oct", y: 94 },
-      { x: "Nov", y: 74 },
-      { x: "Dec", y: 62 },
+    traffic: [
+      { timestamp: "2023-04-01T00:00:00Z", rate: 10 },
+      { timestamp: "2023-04-01T00:00:10Z", rate: 20 },
+      { timestamp: "2023-04-01T00:00:20Z", rate: 15 },
+      { timestamp: "2023-04-01T00:00:30Z", rate: 25 },
+      { timestamp: "2023-04-01T00:00:40Z", rate: 30 },
+      { timestamp: "2023-04-01T00:00:50Z", rate: 35 },
+      { timestamp: "2023-04-01T00:01:00Z", rate: 40 },
+      { timestamp: "2023-04-01T00:01:10Z", rate: 45 },
+      { timestamp: "2023-04-01T00:01:20Z", rate: 50 },
+      { timestamp: "2023-04-01T00:01:30Z", rate: 55 },
     ],
   };
 }
-
 export async function getWeeksProfitData(timeFrame?: string) {
   // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
