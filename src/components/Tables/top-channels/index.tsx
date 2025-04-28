@@ -35,8 +35,8 @@ export async function TopChannels({ className }: { className?: string }) {
         <TableHeader>
           <TableRow className="border-none uppercase [&>th]:text-center">
             <TableHead className="min-w-[120px] !text-left">IP</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
+            <TableHead>Date-Time</TableHead>
+
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -48,11 +48,10 @@ export async function TopChannels({ className }: { className?: string }) {
               key={entry.ip + i}
             >
               <TableCell className="!text-left">{entry.ip}</TableCell>
-              <TableCell>{entry.date}</TableCell>
-              <TableCell>{entry.time}</TableCell>
+              <TableCell>{entry.date} {entry.time}</TableCell>
               <TableCell>
                 <button className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">
-                  Block
+                  Unlock
                 </button>
               </TableCell>
             </TableRow>
