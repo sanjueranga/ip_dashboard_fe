@@ -1,41 +1,33 @@
 import * as logos from "@/assets/logos";
 
-export async function getTopProducts() {
+export async function getIPs() {
   // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return [
     {
-      image: "/images/product/product-01.png",
-      name: "Apple Watch Series 7",
-      category: "Electronics",
-      price: 296,
-      sold: 22,
-      profit: 45,
+      ip: "192.168.1.1",
+      date: "2023-01-13",
+      time: "18:00:00",
+      status: "blocked",
     },
     {
-      image: "/images/product/product-02.png",
-      name: "Macbook Pro M1",
-      category: "Electronics",
-      price: 546,
-      sold: 12,
-      profit: 125,
+      ip: "192.168.1.2",
+      date: "2023-01-14",
+      time: "12:30:00",
+      status: "unblocked",
     },
     {
-      image: "/images/product/product-03.png",
-      name: "Dell Inspiron 15",
-      category: "Electronics",
-      price: 443,
-      sold: 64,
-      profit: 247,
+      ip: "192.168.1.3",
+      date: "2023-01-15",
+      time: "09:45:00",
+      status: "blocked",
     },
     {
-      image: "/images/product/product-04.png",
-      name: "HP Probook 450",
-      category: "Electronics",
-      price: 499,
-      sold: 72,
-      profit: 103,
+      ip: "192.168.1.4",
+      date: "2023-01-16",
+      time: "22:15:00",
+      status: "unblocked",
     },
   ];
 }

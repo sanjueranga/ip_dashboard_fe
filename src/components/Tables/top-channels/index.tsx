@@ -9,10 +9,11 @@ import {
 import { compactFormat, standardFormat } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { getTopChannels } from "../fetch";
+import { getIPs } from "../fetch";
 
 export async function TopChannels({ className }: { className?: string }) {
-  const data = await getTopChannels();
+  const data = await getIPs();
+  console.log("data :", data);
 
   return (
     <div
@@ -21,48 +22,39 @@ export async function TopChannels({ className }: { className?: string }) {
         className,
       )}
     >
-      <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-        Top Channels
-      </h2>
-
+      <div className="flex h-10 justify-between">
+        {" "}
+        <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
+          Top Channels
+        </h2>
+        <button className="rounded bg-green-500 px-4 text-white hover:bg-green-600">
+          Add IP
+        </button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow className="border-none uppercase [&>th]:text-center">
-            <TableHead className="min-w-[120px] !text-left">Source</TableHead>
-            <TableHead>Visitors</TableHead>
-            <TableHead className="!text-right">Revenues</TableHead>
-            <TableHead>Sales</TableHead>
-            <TableHead>Conversion</TableHead>
+            <TableHead className="min-w-[120px] !text-left">IP</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Time</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {data.map((channel, i) => (
+          {data.map((entry, i) => (
             <TableRow
               className="text-center text-base font-medium text-dark dark:text-white"
-              key={channel.name + i}
+              key={entry.ip + i}
             >
-              <TableCell className="flex min-w-fit items-center gap-3">
-                <Image
-                  src={channel.logo}
-                  className="size-8 rounded-full object-cover"
-                  width={40}
-                  height={40}
-                  alt={channel.name + " Logo"}
-                  role="presentation"
-                />
-                <div className="">{channel.name}</div>
+              <TableCell className="!text-left">{entry.ip}</TableCell>
+              <TableCell>{entry.date}</TableCell>
+              <TableCell>{entry.time}</TableCell>
+              <TableCell>
+                <button className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">
+                  Block
+                </button>
               </TableCell>
-
-              <TableCell>{compactFormat(channel.visitors)}</TableCell>
-
-              <TableCell className="!text-right text-green-light-1">
-                ${standardFormat(channel.revenues)}
-              </TableCell>
-
-              <TableCell>{channel.sales}</TableCell>
-
-              <TableCell>{channel.conversion}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
