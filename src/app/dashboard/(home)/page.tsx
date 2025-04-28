@@ -5,10 +5,10 @@ import { TopChannels } from "@/components/Tables/top-channels";
 import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
 import { Suspense } from "react";
-import { ChatsCard } from "./_components/chats-card";
 import { OverviewCardsGroup } from "./_components/overview-cards";
 import { OverviewCardsSkeleton } from "./_components/overview-cards/skeleton";
 import { RegionLabels } from "./_components/region-labels";
+import ConfigCard from "./_components/config-card";
 
 type PropsType = {
   searchParams: Promise<{
@@ -39,9 +39,6 @@ export default async function Home({ searchParams }: PropsType) {
           className="col-span-12 xl:col-span-5"
         />
 
-     
-
-
         <div className="col-span-12 grid xl:col-span-8">
           <Suspense fallback={<TopChannelsSkeleton />}>
             <TopChannels />
@@ -49,7 +46,9 @@ export default async function Home({ searchParams }: PropsType) {
         </div>
 
         <Suspense fallback={null}>
-          <ChatsCard />
+          <div className="w-full">
+            <ConfigCard algorithm="SHA-256" threshold="0.75" />
+          </div>
         </Suspense>
       </div>
     </>
