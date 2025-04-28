@@ -26,7 +26,6 @@ export async function PaymentsOverview({
           Network Traffic Overview
         </h2>
 
-        <PeriodPicker defaultValue={timeFrame} sectionKey="network_traffic_overview" />
       </div>
 
       <NetworkTrafficChart
