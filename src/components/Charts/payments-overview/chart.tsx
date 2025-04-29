@@ -29,6 +29,9 @@ export function NetworkTrafficChart({ data }: PropsType) {
         show: false,
       },
       fontFamily: "inherit",
+      zoom: {
+  enabled: false, // Disable zooming
+},
     },
     fill: {
       gradient: {
