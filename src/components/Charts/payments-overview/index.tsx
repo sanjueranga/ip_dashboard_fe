@@ -1,6 +1,6 @@
 import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
-import { getNetworkTrafficData } from "@/services/charts.services";
+import { getNetworkTrafficData } from "@/services/api.services";
 import { NetworkTrafficChart } from "./chart";
 
 type PropsType = {
