@@ -1,6 +1,6 @@
 import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
-import { getWeeksProfitData } from "@/services/charts.services";
+import { getTopClients } from "@/services/api.services";
 import { WeeksProfitChart } from "./chart";
 
 type PropsType = {
@@ -9,7 +9,7 @@ type PropsType = {
 };
 
 export async function WeeksProfit({ className, timeFrame }: PropsType) {
-  const data = await getWeeksProfitData(timeFrame);
+  const data = await getTopClients();
 
   return (
     <div
@@ -23,11 +23,6 @@ export async function WeeksProfit({ className, timeFrame }: PropsType) {
           Profit {timeFrame || "this week"}
         </h2>
 
-        <PeriodPicker
-          items={["this week", "last week"]}
-          defaultValue={timeFrame || "this week"}
-          sectionKey="weeks_profit"
-        />
       </div>
 
       <WeeksProfitChart data={data} />

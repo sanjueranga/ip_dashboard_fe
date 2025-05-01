@@ -4,10 +4,7 @@ import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 
 type PropsType = {
-  data: {
-    sales: { x: string; y: number }[];
-    revenue: { x: string; y: number }[];
-  };
+  data: { name: string; count: number }[];
 };
 
 const Chart = dynamic(() => import("react-apexcharts"), {
@@ -16,10 +13,9 @@ const Chart = dynamic(() => import("react-apexcharts"), {
 
 export function WeeksProfitChart({ data }: PropsType) {
   const options: ApexOptions = {
-    colors: ["#5750F1", "#0ABEF9"],
+    colors: ["#5750F1"],
     chart: {
       type: "bar",
-      stacked: true,
       toolbar: {
         show: false,
       },
@@ -46,8 +42,6 @@ export function WeeksProfitChart({ data }: PropsType) {
         horizontal: false,
         borderRadius: 3,
         columnWidth: "25%",
-        borderRadiusApplication: "end",
-        borderRadiusWhenStacked: "last",
       },
     },
     dataLabels: {
@@ -69,6 +63,7 @@ export function WeeksProfitChart({ data }: PropsType) {
     },
 
     xaxis: {
+      categories: data.map((item) => item.name),
       axisBorder: {
         show: false,
       },
@@ -77,32 +72,21 @@ export function WeeksProfitChart({ data }: PropsType) {
       },
     },
     legend: {
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "inherit",
-      fontWeight: 500,
-      fontSize: "14px",
-      markers: {
-        size: 9,
-        shape: "circle",
-      },
+      show: false,
     },
     fill: {
       opacity: 1,
     },
   };
+
   return (
     <div className="-ml-3.5 mt-3">
       <Chart
         options={options}
         series={[
           {
-            name: "Sales",
-            data: data.sales,
-          },
-          {
-            name: "Revenue",
-            data: data.revenue,
+            name: "Count",
+            data: data.map((item) => item.count),
           },
         ]}
         type="bar"
