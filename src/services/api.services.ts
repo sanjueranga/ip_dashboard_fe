@@ -25,5 +25,31 @@ export async function getNetworkTrafficData() {
     }
 }
 
+export async function getOverviewData() {
+    try {
+        const response = await axios.get("/api/overview");
+        return response.data;
+    } catch (error) {
+        console.log("Failed to fetch overview data, returning dummy data:", error);
 
-
+        // Return dummy data in case of failure
+        return {
+            views: {
+                value: 3456,
+                growthRate: 0.43,
+            },
+            profit: {
+                value: 4220,
+                growthRate: 4.35,
+            },
+            products: {
+                value: 3456,
+                growthRate: 2.59,
+            },
+            users: {
+                value: 3456,
+                growthRate: -0.95,
+            },
+        };
+    }
+}
