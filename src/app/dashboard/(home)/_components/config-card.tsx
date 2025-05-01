@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Edit, Check } from "lucide-react";
+import { updateConfig } from "@/services/api.services";
 
 interface ConfigCardProps {
   algorithm: string;
@@ -15,10 +16,18 @@ export default function ConfigCard({
   const [isEditing, setIsEditing] = useState(false);
   const [currentAlgorithm, setCurrentAlgorithm] = useState(algorithm);
   const [currentThreshold, setCurrentThreshold] = useState(threshold);
+  const [error, setError] = useState("");
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Add logic here to persist the changes if needed
+  const handleSave = async () => {
+    try {
+      // Call API to update configuration
+      await updateConfig(currentAlgorithm, currentThreshold);
+      setIsEditing(false);
+      setError(""); // Clear any previous errors
+    } catch (err) {
+      console.error("Failed to save configuration:", err);
+      setError("Failed to save configuration. Please try again.");
+    }
   };
 
   return (
@@ -48,6 +57,7 @@ export default function ConfigCard({
       </div>
 
       <div className="mt-5 space-y-5">
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <div
           className={`group rounded-lg border ${
             isEditing ? "border-emerald-500" : "border-transparent"

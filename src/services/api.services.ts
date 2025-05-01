@@ -113,3 +113,13 @@ export async function unblockIP(ip: string) {
     throw error;
   }
 }
+
+export async function updateConfig(algorithm: string, threshold: string) {
+  try {
+    const response = await axios.post("/api/config", { algorithm, threshold });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update configuration:", error);
+    throw error;
+  }
+}
