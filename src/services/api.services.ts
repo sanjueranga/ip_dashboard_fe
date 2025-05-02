@@ -28,33 +28,24 @@ export async function getNetworkTrafficData() {
 export async function getOverviewData() {
     try {
         const response = await axios.get("/api/overview");
-        return response.data;
+        return {
+            traffic: response.data.traffic || 0,
+            users: response.data.users || 0,
+            blockedIPs: response.data.blockedIPs || 0,
+            allowedUsers: response.data.allowedUsers || 0,
+        };
     } catch (error) {
         console.log("Failed to fetch overview data, returning dummy data:", error);
 
         // Return dummy data in case of failure
         return {
-            views: {
-                value: 3456,
-                growthRate: 0.43,
-            },
-            profit: {
-                value: 4220,
-                growthRate: 4.35,
-            },
-            products: {
-                value: 3456,
-                growthRate: 2.59,
-            },
-            users: {
-                value: 3456,
-                growthRate: -0.95,
-            },
+            traffic: 3456,
+            users: 1234,
+            blockedIPs: 56,
+            allowedUsers: 789,
         };
     }
 }
-
-
 export async function getTopClients() {
     try {
         const response = await axios.get("/api/top-clients");
