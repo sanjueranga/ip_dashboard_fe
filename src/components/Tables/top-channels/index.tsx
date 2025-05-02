@@ -17,6 +17,8 @@ export function TopChannels({ className }: { className?: string }) {
   );
   const [ipInput, setIpInput] = useState("");
   const [error, setError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [ipToBlock, setIpToBlock] = useState("");
 
   // Fetch blocked IPs from the backend
   useEffect(() => {
@@ -49,7 +51,7 @@ export function TopChannels({ className }: { className?: string }) {
   };
 
   // Function to add a new IP
-  const addIP = async () => {
+  const confirmAddIP = () => {
     if (!validateIPFormat(ipInput)) {
       setError(
         "Please enter a valid IP address (format: xxx.xxx.xxx.xxx with values 0-255)"
@@ -63,9 +65,15 @@ export function TopChannels({ className }: { className?: string }) {
       return;
     }
 
+    // Show confirmation popup
+    setIpToBlock(ipInput);
+    setShowConfirm(true);
+  };
+
+  const addIP = async () => {
     try {
       // Call API to add IP
-      await addBlockedIP(ipInput);
+      await addBlockedIP(ipToBlock);
 
       // Get current date and time
       const now = new Date();
@@ -73,12 +81,13 @@ export function TopChannels({ className }: { className?: string }) {
       const time = now.toTimeString().split(" ")[0];
 
       // Add new IP to data
-      const newEntry = { ip: ipInput, date, time };
+      const newEntry = { ip: ipToBlock, date, time };
       setData([...data, newEntry]);
 
       // Clear input and error
       setIpInput("");
       setError("");
+      setShowConfirm(false);
     } catch (err) {
       console.error("Failed to add IP:", err);
       setError("Failed to add IP. Please try again.");
@@ -122,16 +131,14 @@ export function TopChannels({ className }: { className?: string }) {
             {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
           </div>
           <div>
-           <button
-            onClick={addIP}
-            className="whitespace-nowrap rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 "
-          >
-            Add IP
-          </button>
+            <button
+              onClick={confirmAddIP}
+              className="whitespace-nowrap rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+            >
+              Add IP
+            </button>
           </div>
-        
         </div>
-         
       </div>
 
       <Table>
@@ -165,6 +172,34 @@ export function TopChannels({ className }: { className?: string }) {
           ))}
         </TableBody>
       </Table>
+
+      {/* Confirmation Popup */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+              Confirm Block
+            </h3>
+            <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+              Are you sure you want to block the IP: <strong>{ipToBlock}</strong>?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={addIP}
+                className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
