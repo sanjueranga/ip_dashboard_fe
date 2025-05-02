@@ -111,15 +111,15 @@ export function TopChannels({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "grid rounded-lg bg-white px-6 pb-4 pt-6 shadow-md dark:bg-gray-dark",
+        "grid rounded-lg bg-white px-6  pt-6 shadow-md dark:bg-gray-dark",
         className
       )}
     >
-      <div className="mb-6">
+      <div className="">
         <h2 className="mb-8 text-xl font-bold text-dark dark:text-white">
           Blocked IPs
         </h2>
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 mb-4">
           <div className="flex-grow">
             <input
               type="text"
@@ -139,39 +139,48 @@ export function TopChannels({ className }: { className?: string }) {
             </button>
           </div>
         </div>
+        <Table>
+    <TableHeader>
+      <TableRow className="border-none uppercase [&>th]:text-center">
+        <TableHead className="min-w-[120px] !text-left">IP</TableHead>
+        <TableHead>Date-Time</TableHead>
+        <TableHead>Action</TableHead>
+      </TableRow>
+    </TableHeader>
+
+    <TableBody>
+      {data.length > 0 ? (
+        data.map((entry, i) => (
+          <TableRow
+            className="text-center text-base font-medium text-dark dark:text-white"
+            key={entry.ip + i}
+          >
+            <TableCell className="!text-left">{entry.ip}</TableCell>
+            <TableCell>
+              {entry.date} {entry.time}
+            </TableCell>
+            <TableCell>
+              <button
+                onClick={() => removeIP(entry.ip)}
+                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+              >
+                Unlock
+              </button>
+            </TableCell>
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell colSpan={3} className="py-30 text-center text-gray-500 dark:text-gray-400 text-xl">
+            No blocked IPs found.
+          </TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow className="border-none uppercase [&>th]:text-center">
-            <TableHead className="min-w-[120px] !text-left">IP</TableHead>
-            <TableHead>Date-Time</TableHead>
-            <TableHead>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {data.map((entry, i) => (
-            <TableRow
-              className="text-center text-base font-medium text-dark dark:text-white"
-              key={entry.ip + i}
-            >
-              <TableCell className="!text-left">{entry.ip}</TableCell>
-              <TableCell>
-                {entry.date} {entry.time}
-              </TableCell>
-              <TableCell>
-                <button
-                  onClick={() => removeIP(entry.ip)}
-                  className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-                >
-                  Unlock
-                </button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      
 
       {/* Confirmation Popup */}
       {showConfirm && (

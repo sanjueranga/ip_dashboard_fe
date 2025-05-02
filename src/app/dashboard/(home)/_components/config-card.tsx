@@ -1,32 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Edit, Check } from "lucide-react";
-import { updateConfig } from "@/services/api.services";
+import { getConfig, updateConfig } from "@/services/api.services";
 
-interface ConfigCardProps {
-  algorithm: string;
-  threshold: number;
-  time_window: number;
-  block_duration: number;
-}
-
-export default function ConfigCard({
-  algorithm = "SHA-256",
-  threshold = 0.75,
-  time_window = 10,
-  block_duration = 100,
-}: ConfigCardProps) {
+export default function ConfigCard() {
   const [isEditing, setIsEditing] = useState(false);
-  const [currentThreshold, setCurrentThreshold] = useState(threshold);
-  const [currentTimeWindow, setCurrentTimeWindow] = useState(time_window);
-  const [currentBlockDuration, setCurrentBlockDuration] = useState(block_duration);
+  const [algorithm, setAlgorithm] = useState("SHA-256"); // Default algorithm
+  const [currentThreshold, setCurrentThreshold] = useState(0);
+  const [currentTimeWindow, setCurrentTimeWindow] = useState(0);
+  const [currentBlockDuration, setCurrentBlockDuration] = useState(0);
   const [error, setError] = useState("");
+
+  // Fetch configuration data on component mount
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const config = await getConfig();
+        setAlgorithm(config.algorithm || "SHA-256"); // Default to "SHA-256" if not provided
+        setCurrentThreshold(config.threshold || 0);
+        setCurrentTimeWindow(config.time_window || 0);
+        setCurrentBlockDuration(config.block_duration || 0);
+      } catch (err) {
+        console.error("Failed to fetch configuration:", err);
+        setError("Failed to load configuration. Please try again.");
+      }
+    };
+
+    fetchConfig();
+  }, []);
 
   const handleSave = async () => {
     try {
-      // Call API to update configuration
-      await updateConfig(currentThreshold);
+
+      await updateConfig(
+        currentThreshold,
+        currentTimeWindow,
+        currentBlockDuration
+      );
       setIsEditing(false);
       setError(""); // Clear any previous errors
     } catch (err) {
@@ -142,6 +153,6 @@ export default function ConfigCard({
           )}
         </div>
       </div>
-      </div>
+    </div>
   );
 }

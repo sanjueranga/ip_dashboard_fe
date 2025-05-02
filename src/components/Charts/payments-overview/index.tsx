@@ -60,14 +60,14 @@ export function PaymentsOverview({ timeFrame = "monthly", className }: PropsType
       <dl className="grid divide-stroke text-center dark:divide-dark-3 sm:grid-cols-2 sm:divide-x [&>div]:flex [&>div]:flex-col-reverse [&>div]:gap-1">
         <div className="dark:border-dark-3 max-sm:mb-3 max-sm:border-b max-sm:pb-3">
           <dt className="text-xl font-bold text-dark dark:text-white">
-            {data.reduce((acc, { rate }) => acc + rate, 0)} counts
+            {data.reduce((acc, { rate }) => acc + rate, 0)} hits
           </dt>
           <dd className="font-medium dark:text-dark-6">Total Traffic</dd>
         </div>
 
         <div>
           <dt className="text-xl font-bold text-dark dark:text-white">
-            {data.length} timestamps
+            {data.length} 
           </dt>
           <dd className="font-medium dark:text-dark-6">Total Data Points</dd>
         </div>

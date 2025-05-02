@@ -48,7 +48,7 @@ export default async function Home({ searchParams }: PropsType) {
         
           <div className="col-span-12 xl:col-span-4">
             <Suspense fallback={null}>
-            <ConfigCard algorithm="SHA-256" threshold={0.75} />
+            <ConfigCard  />
             </Suspense>
 
           </div>

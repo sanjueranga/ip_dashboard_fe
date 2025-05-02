@@ -84,8 +84,8 @@ export async function getBlockedIPs() {
 
     // Return dummy data in case of failure
     return [
-      { ip: "192.168.1.1", blocked_since: "2025-05-02 00:00:00" },
-      { ip: "10.0.0.1", blocked_since: "2025-05-02 00:05:00" },
+      // { ip: "192.168.1.1", blocked_since: "2025-05-02 00:00:00" },
+      // { ip: "10.0.0.1", blocked_since: "2025-05-02 00:05:00" },
     ];
   }
 }
@@ -130,7 +130,7 @@ export async function getConfig() {
 }
 
 // Update server configuration (only threshold is sent)
-export async function updateConfig(threshold: number) {
+export async function updateConfig(threshold: number, time_window: number, block_duration: number) {
   try {
     const response = await axios.post("/control/config", { threshold });
     return response.data;
