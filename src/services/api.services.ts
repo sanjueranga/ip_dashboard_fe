@@ -114,9 +114,9 @@ export async function unblockIP(ip: string) {
   }
 }
 
-export async function updateConfig(algorithm: string, threshold: string) {
+export async function updateConfig( threshold: number) {
   try {
-    const response = await axios.post("/api/config", { algorithm, threshold });
+    const response = await axios.post("/api/config", {  threshold });
     return response.data;
   } catch (error) {
     console.error("Failed to update configuration:", error);

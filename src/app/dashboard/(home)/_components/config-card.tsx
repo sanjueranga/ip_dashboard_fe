@@ -6,22 +6,21 @@ import { updateConfig } from "@/services/api.services";
 
 interface ConfigCardProps {
   algorithm: string;
-  threshold: string;
+  threshold: number;
 }
 
 export default function ConfigCard({
   algorithm = "SHA-256",
-  threshold = "0.75",
+  threshold = 0.75,
 }: ConfigCardProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [currentAlgorithm, setCurrentAlgorithm] = useState(algorithm);
   const [currentThreshold, setCurrentThreshold] = useState(threshold);
   const [error, setError] = useState("");
 
   const handleSave = async () => {
     try {
       // Call API to update configuration
-      await updateConfig(currentAlgorithm, currentThreshold);
+      await updateConfig(currentThreshold);
       setIsEditing(false);
       setError(""); // Clear any previous errors
     } catch (err) {
@@ -58,26 +57,13 @@ export default function ConfigCard({
 
       <div className="mt-5 space-y-5">
         {error && <p className="text-sm text-red-500">{error}</p>}
-        <div
-          className={`group rounded-lg border ${
-            isEditing ? "border-emerald-500" : "border-transparent"
-          } bg-slate-50 p-4 transition-all duration-200 hover:border-slate-200 dark:bg-slate-800/50 dark:hover:border-slate-700`}
-        >
+        <div className="group rounded-lg border border-transparent bg-slate-50 p-4 transition-all duration-200 hover:border-slate-200 dark:bg-slate-800/50 dark:hover:border-slate-700">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Current Algorithm
           </p>
-          {isEditing ? (
-            <input
-              type="text"
-              value={currentAlgorithm}
-              onChange={(e) => setCurrentAlgorithm(e.target.value)}
-              className="mt-1.5 w-full rounded-lg border border-slate-300 p-2 text-lg font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-            />
-          ) : (
-            <p className="mt-1.5 text-lg font-semibold text-slate-800 dark:text-white">
-              {currentAlgorithm}
-            </p>
-          )}
+          <p className="mt-1.5 text-lg font-semibold text-slate-800 dark:text-white">
+            {algorithm}
+          </p>
         </div>
 
         <div
@@ -90,9 +76,11 @@ export default function ConfigCard({
           </p>
           {isEditing ? (
             <input
-              type="text"
+              type="number"
+              min="0"
+              step="0.01"
               value={currentThreshold}
-              onChange={(e) => setCurrentThreshold(e.target.value)}
+              onChange={(e) => setCurrentThreshold(Number(e.target.value))}
               className="mt-1.5 w-full rounded-lg border border-slate-300 p-2 text-lg font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
             />
           ) : (
