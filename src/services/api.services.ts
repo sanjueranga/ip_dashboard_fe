@@ -1,92 +1,99 @@
 import axios from "axios";
 
+// Fetch last 10 seconds traffic rate
 export async function getNetworkTrafficData() {
-    try {
-        const response = await axios.get("/api/get-traffic");
-        return response.data;
-    } catch (error) {
-        console.log("Failed to fetch network traffic data, returning dummy data:", error);
+  try {
+    const response = await axios.get("/telemetry/traffic");
+    return {
+      traffic: response.data.rate || 0,
+      timestamp: response.data.timestamp || "",
+    };
+  } catch (error) {
+    console.log("Failed to fetch network traffic data, returning dummy data:", error);
 
-        // Return dummy data in case of failure
-        return {
-            traffic: [
-                { timestamp: "2023-04-01T00:00:00Z", rate: 10 },
-                { timestamp: "2023-04-01T00:00:10Z", rate: 20 },
-                { timestamp: "2023-04-01T00:00:20Z", rate: 15 },
-                { timestamp: "2023-04-01T00:00:30Z", rate: 25 },
-                { timestamp: "2023-04-01T00:00:40Z", rate: 30 },
-                { timestamp: "2023-04-01T00:00:50Z", rate: 35 },
-                { timestamp: "2023-04-01T00:01:00Z", rate: 40 },
-                { timestamp: "2023-04-01T00:01:10Z", rate: 45 },
-                { timestamp: "2023-04-01T00:01:20Z", rate: 50 },
-                { timestamp: "2023-04-01T00:01:30Z", rate: 55 },
-            ],
-        };
-    }
+    // Return dummy data in case of failure
+    return [{
+      traffic: 0,
+      timestamp: "2025-05-02 00:00:00",
+    }];
+  }
 }
 
+// Fetch overview data (traffic, users, blocked IPs, allowed users)
 export async function getOverviewData() {
-    try {
-        const response = await axios.get("/api/overview");
-        return {
-            traffic: response.data.traffic || 0,
-            users: response.data.users || 0,
-            blockedIPs: response.data.blockedIPs || 0,
-            allowedUsers: response.data.allowedUsers || 0,
-        };
-    } catch (error) {
-        console.log("Failed to fetch overview data, returning dummy data:", error);
+  try {
+    const trafficResponse = await axios.get("/telemetry/traffic");
+    const ipHitsResponse = await axios.get("/telemetry/ip-hits");
+    const blockedIPsResponse = await axios.get("/telemetry/blocked");
 
-        // Return dummy data in case of failure
-        return {
-            traffic: 3456,
-            users: 1234,
-            blockedIPs: 56,
-            allowedUsers: 789,
-        };
-    }
+    const traffic = trafficResponse.data.rate || 0;
+    const users = Object.keys(ipHitsResponse.data.ip_hits_last_minute).length || 0;
+    const blockedIPs = blockedIPsResponse.data.blocked_ips.length || 0;
+    const allowedUsers = users - blockedIPs;
+
+    return {
+      traffic,
+      users,
+      blockedIPs,
+      allowedUsers,
+    };
+  } catch (error) {
+    console.log("Failed to fetch overview data, returning dummy data:", error);
+
+    // Return dummy data in case of failure
+    return {
+      traffic: 3456,
+      users: 1234,
+      blockedIPs: 56,
+      allowedUsers: 789,
+    };
+  }
 }
+
+// Fetch top IP hits (last 60 seconds, sorted by hit count descending)
 export async function getTopClients() {
-    try {
-        const response = await axios.get("/api/top-clients");
-        return response.data;
-    } catch (error) {
-        console.log("Failed to fetch top clients data, returning dummy data:", error);
+  try {
+    const response = await axios.get("/telemetry/ip-hits");
+    const ipHits = response.data.ip_hits_last_minute || {};
 
-        // Return dummy data in case of failure
-        return [
-            { name: "Sat", count: 44 },
-            { name: "Sun", count: 55 },
-            { name: "Mon", count: 41 },
-            { name: "Tue", count: 67 },
-            { name: "Wed", count: 22 },
-            { name: "Thu", count: 43 },
-            { name: "Fri", count: 65 },
-        ];
-    }
+    // Convert to array and sort by count descending
+    const sortedHits = Object.entries(ipHits)
+      .map(([ip, count]) => ({ name: ip, count: count as number }))
+      .sort((a: { name: string; count: number }, b: { name: string; count: number }) => b.count - a.count);
+
+    return sortedHits;
+  } catch (error) {
+    console.log("Failed to fetch top clients data, returning dummy data:", error);
+
+    // Return dummy data in case of failure
+    return [
+      { name: "127.0.0.1", count: 10 },
+      { name: "192.168.1.1", count: 8 },
+      { name: "10.0.0.1", count: 5 },
+    ];
+  }
 }
 
-
+// Fetch blocked IPs with time
 export async function getBlockedIPs() {
-    try {
-        const response = await axios.get("/api/get-blocked-ips");
-        return response.data;
-    } catch (error) {
-        console.log("Failed to fetch blocked IPs data, returning dummy data:", error);
+  try {
+    const response = await axios.get("/telemetry/blocked");
+    return response.data.blocked_ips || [];
+  } catch (error) {
+    console.log("Failed to fetch blocked IPs data, returning dummy data:", error);
 
-        // Return dummy data in case of failure
-        return [
-            { ip: "192.168.1.1", date: "2025-04-28", time: "14:30:45" },
-            { ip: "10.0.0.1", date: "2025-04-28", time: "12:15:22" },
-        ];
-    }
+    // Return dummy data in case of failure
+    return [
+      { ip: "192.168.1.1", blocked_since: "2025-05-02 00:00:00" },
+      { ip: "10.0.0.1", blocked_since: "2025-05-02 00:05:00" },
+    ];
+  }
 }
 
-
-// Function to add a blocked IP
+// Add a blocked IP
 export async function addBlockedIP(ip: string) {
   try {
-    const response = await axios.post("/api/blocked-ips", { ip });
+    const response = await axios.post("/control/block", { ip });
     return response.data;
   } catch (error) {
     console.error("Failed to add blocked IP:", error);
@@ -94,10 +101,10 @@ export async function addBlockedIP(ip: string) {
   }
 }
 
-// Function to unblock an IP
+// Unblock an IP
 export async function unblockIP(ip: string) {
   try {
-    const response = await axios.delete(`/api/blocked-ips/${ip}`);
+    const response = await axios.post("/control/unblock", { ip });
     return response.data;
   } catch (error) {
     console.error("Failed to unblock IP:", error);
@@ -105,9 +112,27 @@ export async function unblockIP(ip: string) {
   }
 }
 
-export async function updateConfig( threshold: number) {
+// Fetch current server configuration (only threshold is used in the frontend)
+export async function getConfig() {
   try {
-    const response = await axios.post("/api/config", {  threshold });
+    const response = await axios.get("/telemetry/config");
+    return response.data.config || {};
+  } catch (error) {
+    console.log("Failed to fetch server configuration, returning dummy data:", error);
+
+    // Return dummy data in case of failure
+    return {
+      threshold: 100,
+      time_window: 10,
+      block_duration: 300,
+    };
+  }
+}
+
+// Update server configuration (only threshold is sent)
+export async function updateConfig(threshold: number) {
+  try {
+    const response = await axios.post("/control/config", { threshold });
     return response.data;
   } catch (error) {
     console.error("Failed to update configuration:", error);
