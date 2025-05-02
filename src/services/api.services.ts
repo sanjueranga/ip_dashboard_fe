@@ -12,10 +12,10 @@ export async function getNetworkTrafficData() {
     console.log("Failed to fetch network traffic data, returning dummy data:", error);
 
     // Return dummy data in case of failure
-    return [{
+    return {
       traffic: 0,
       timestamp: "2025-05-02 00:00:00",
-    }];
+    };
   }
 }
 
