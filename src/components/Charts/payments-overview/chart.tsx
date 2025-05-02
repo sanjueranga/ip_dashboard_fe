@@ -91,7 +91,7 @@ export function NetworkTrafficChart({ data }: PropsType) {
     },
     yaxis: {
       labels: {
-        formatter: (value) => `${value} counts`, // Display counts on the y-axis
+        formatter: (value) => `${value} hits`, // Display counts on the y-axis
       },
     },
   };

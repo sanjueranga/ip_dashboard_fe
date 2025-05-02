@@ -107,10 +107,9 @@ export function TopChannels({ className }: { className?: string }) {
       )}
     >
       <div className="mb-6">
-        <h2 className="mb-4 text-xl font-bold text-dark dark:text-white">
+        <h2 className="mb-8 text-xl font-bold text-dark dark:text-white">
           Blocked IPs
         </h2>
-
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
           <div className="flex-grow">
             <input
@@ -122,13 +121,17 @@ export function TopChannels({ className }: { className?: string }) {
             />
             {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
           </div>
-          <button
+          <div>
+           <button
             onClick={addIP}
-            className="whitespace-nowrap rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+            className="whitespace-nowrap rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 "
           >
             Add IP
           </button>
+          </div>
+        
         </div>
+         
       </div>
 
       <Table>
