@@ -75,7 +75,7 @@ export default function SigninWithPassword() {
       />
 
       <div className="mb-6 flex items-center justify-between gap-2 py-2 font-medium">
-        <Checkbox
+        {/* <Checkbox
           label="Remember me"
           name="remember"
           withIcon="check"
@@ -87,14 +87,9 @@ export default function SigninWithPassword() {
               remember: e.target.checked,
             })
           }
-        />
+        /> */}
 
-        <Link
-          href="/auth/forgot-password"
-          className="hover:text-primary dark:text-white dark:hover:text-primary"
-        >
-          Forgot Password?
-        </Link>
+     
       </div>
 
       {error && (
