@@ -7,14 +7,20 @@ import { updateConfig } from "@/services/api.services";
 interface ConfigCardProps {
   algorithm: string;
   threshold: number;
+  time_window: number;
+  block_duration: number;
 }
 
 export default function ConfigCard({
   algorithm = "SHA-256",
   threshold = 0.75,
+  time_window = 10,
+  block_duration = 100,
 }: ConfigCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentThreshold, setCurrentThreshold] = useState(threshold);
+  const [currentTimeWindow, setCurrentTimeWindow] = useState(time_window);
+  const [currentBlockDuration, setCurrentBlockDuration] = useState(block_duration);
   const [error, setError] = useState("");
 
   const handleSave = async () => {
@@ -89,7 +95,53 @@ export default function ConfigCard({
             </p>
           )}
         </div>
+
+        <div
+          className={`group rounded-lg border ${
+            isEditing ? "border-emerald-500" : "border-transparent"
+          } bg-slate-50 p-4 transition-all duration-200 hover:border-slate-200 dark:bg-slate-800/50 dark:hover:border-slate-700`}
+        >
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Time Window
+          </p>
+          {isEditing ? (
+            <input
+              type="number"
+              min="0"
+              value={currentTimeWindow}
+              onChange={(e) => setCurrentTimeWindow(Number(e.target.value))}
+              className="mt-1.5 w-full rounded-lg border border-slate-300 p-2 text-lg font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+            />
+          ) : (
+            <p className="mt-1.5 text-lg font-semibold text-slate-800 dark:text-white">
+              {currentTimeWindow} <span className="text-sm text-slate-500 dark:text-slate-400">seconds</span>
+            </p>
+          )}
+        </div>
+
+        <div
+          className={`group rounded-lg border ${
+            isEditing ? "border-emerald-500" : "border-transparent"
+          } bg-slate-50 p-4 transition-all duration-200 hover:border-slate-200 dark:bg-slate-800/50 dark:hover:border-slate-700`}
+        >
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Block Duration
+          </p>
+          {isEditing ? (
+            <input
+              type="number"
+              min="0"
+              value={currentBlockDuration}
+              onChange={(e) => setCurrentBlockDuration(Number(e.target.value))}
+              className="mt-1.5 w-full rounded-lg border border-slate-300 p-2 text-lg font-semibold text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+            />
+          ) : (
+            <p className="mt-1.5 text-lg font-semibold text-slate-800 dark:text-white">
+              {currentBlockDuration} <span className="text-sm text-slate-500 dark:text-slate-400">seconds</span>
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+      </div>
   );
 }
