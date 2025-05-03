@@ -13,9 +13,7 @@ import { getBlockedIPs, addBlockedIP, unblockIP } from "@/services/api.services"
 
 export function TopChannels({ className }: { className?: string }) {
   const [data, setData] = useState<{ ip: string; date: string; time: string }[]>(
-    [{
-      ip: "192.168.12.8" ,date:"","time":""
-    }]
+    []
   );
   const [ipInput, setIpInput] = useState("");
   const [error, setError] = useState("");
