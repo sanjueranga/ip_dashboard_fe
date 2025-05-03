@@ -13,12 +13,16 @@ import { getBlockedIPs, addBlockedIP, unblockIP } from "@/services/api.services"
 
 export function TopChannels({ className }: { className?: string }) {
   const [data, setData] = useState<{ ip: string; date: string; time: string }[]>(
-    []
+    [{
+      ip: "192.168.12.8" ,date:"","time":""
+    }]
   );
   const [ipInput, setIpInput] = useState("");
   const [error, setError] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showUnblockConfirm, setShowUnblockConfirm] = useState(false);
   const [ipToBlock, setIpToBlock] = useState("");
+  const [ipToUnblock, setIpToUnblock] = useState("");
 
   // Fetch blocked IPs from the backend
   useEffect(() => {
@@ -94,14 +98,20 @@ export function TopChannels({ className }: { className?: string }) {
     }
   };
 
-  // Handle remove IP
-  const removeIP = async (ipToRemove: string) => {
+  // Function to confirm unblocking an IP
+  const confirmUnblockIP = (ip: string) => {
+    setIpToUnblock(ip);
+    setShowUnblockConfirm(true);
+  };
+
+  const unblockIPHandler = async () => {
     try {
       // Call API to unblock IP
-      await unblockIP(ipToRemove);
+      await unblockIP(ipToUnblock);
 
       // Remove IP from data
-      setData(data.filter((item) => item.ip !== ipToRemove));
+      setData(data.filter((item) => item.ip !== ipToUnblock));
+      setShowUnblockConfirm(false);
     } catch (err) {
       console.error("Failed to unblock IP:", err);
       setError("Failed to unblock IP. Please try again.");
@@ -140,49 +150,50 @@ export function TopChannels({ className }: { className?: string }) {
           </div>
         </div>
         <Table>
-    <TableHeader>
-      <TableRow className="border-none uppercase [&>th]:text-center">
-        <TableHead className="min-w-[120px] !text-left">IP</TableHead>
-        <TableHead>Date-Time</TableHead>
-        <TableHead>Action</TableHead>
-      </TableRow>
-    </TableHeader>
+          <TableHeader>
+            <TableRow className="border-none uppercase [&>th]:text-center">
+              <TableHead className="min-w-[120px] !text-left">IP</TableHead>
+              <TableHead>Date-Time</TableHead>
+              <TableHead>Action</TableHead>
+            </TableRow>
+          </TableHeader>
 
-    <TableBody>
-      {data.length > 0 ? (
-        data.map((entry, i) => (
-          <TableRow
-            className="text-center text-base font-medium text-dark dark:text-white"
-            key={entry.ip + i}
-          >
-            <TableCell className="!text-left">{entry.ip}</TableCell>
-            <TableCell>
-              {entry.date} {entry.time}
-            </TableCell>
-            <TableCell>
-              <button
-                onClick={() => removeIP(entry.ip)}
-                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-              >
-                Unlock
-              </button>
-            </TableCell>
-          </TableRow>
-        ))
-      ) : (
-        <TableRow>
-          <TableCell colSpan={3} className="py-30 text-center text-gray-500 dark:text-gray-400 text-xl">
-            No blocked IPs found.
-          </TableCell>
-        </TableRow>
-      )}
-    </TableBody>
-  </Table>
+          <TableBody>
+            {data.length > 0 ? (
+              data.map((entry, i) => (
+                <TableRow
+                  className="text-center text-base font-medium text-dark dark:text-white"
+                  key={entry.ip + i}
+                >
+                  <TableCell className="!text-left">{entry.ip}</TableCell>
+                  <TableCell>
+                    {entry.date} {entry.time}
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => confirmUnblockIP(entry.ip)}
+                      className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                    >
+                      Unlock
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="py-10 text-center text-gray-500 dark:text-gray-400"
+                >
+                  No blocked IPs found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
-      
-
-      {/* Confirmation Popup */}
+      {/* Confirmation Popup for Blocking */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
@@ -201,6 +212,34 @@ export function TopChannels({ className }: { className?: string }) {
               </button>
               <button
                 onClick={addIP}
+                className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Popup for Unblocking */}
+      {showUnblockConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+              Confirm Unblock
+            </h3>
+            <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+              Are you sure you want to unblock the IP: <strong>{ipToUnblock}</strong>?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowUnblockConfirm(false)}
+                className="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={unblockIPHandler}
                 className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
               >
                 Confirm
