@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { PeriodPicker } from "@/components/period-picker";
 import { cn } from "@/lib/utils";
 import { getTopClients } from "@/services/api.services";
@@ -8,8 +11,25 @@ type PropsType = {
   className?: string;
 };
 
-export async function WeeksProfit({ className, timeFrame }: PropsType) {
-  const data = await getTopClients();
+export function WeeksProfit({ className, timeFrame }: PropsType) {
+  const [data, setData] = useState<{ name: string; count: number }[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const newData = await getTopClients();
+        setData(newData);
+      } catch (error) {
+        console.error("Failed to fetch top clients data:", error);
+      }
+    };
+
+    // Fetch data initially and every 10 seconds
+    fetchData();
+    const interval = setInterval(fetchData, 10000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   return (
     <div
@@ -22,7 +42,6 @@ export async function WeeksProfit({ className, timeFrame }: PropsType) {
         <h2 className="text-body-2xlg font-bold text-dark dark:text-white">
           Top Clients
         </h2>
-
       </div>
 
       <WeeksProfitChart data={data} />

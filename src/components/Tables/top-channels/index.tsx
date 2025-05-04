@@ -23,18 +23,22 @@ export function TopChannels({ className }: { className?: string }) {
   const [ipToUnblock, setIpToUnblock] = useState("");
 
   // Fetch blocked IPs from the backend
-  useEffect(() => {
-    const fetchBlockedIPs = async () => {
-      try {
-        const blockedIPs = await getBlockedIPs();
-        setData(blockedIPs);
-      } catch (err) {
-        console.error("Failed to fetch blocked IPs:", err);
-      }
-    };
+    useEffect(() => {
+      const fetchBlockedIPs = async () => {
+        try {
+          const blockedIPs = await getBlockedIPs();
+          setData(blockedIPs);
+        } catch (err) {
+          console.error("Failed to fetch blocked IPs:", err);
+        }
+      };
 
-    fetchBlockedIPs();
-  }, []);
+      // Fetch data initially and every 10 seconds
+      fetchBlockedIPs();
+      const interval = setInterval(fetchBlockedIPs, 10000);
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
 
   // Validate IP address format
   const validateIPFormat = (ip: string) => {
